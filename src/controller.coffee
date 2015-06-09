@@ -151,7 +151,9 @@ angular.module 'builder.controller', ['builder.provider']
         ###
         input =
             id: $scope.formObject.id
+            key: $scope.formObject.key
             label: $scope.formObject.label
+            isEmail: $scope.formObject.isEmail
             value: value ? ''
         $scope.$parent.input.splice $scope.$index, 1, input
 ]
