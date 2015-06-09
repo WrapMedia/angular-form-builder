@@ -41,11 +41,13 @@ angular.module 'builder.provider', []
         result =
             name: name
             group: component.group ? 'Default'
+            key: component.key ? ''
             label: component.label ? ''
             description: component.description ? ''
             placeholder: component.placeholder ? ''
             editable: component.editable ? yes
             required: component.required ? no
+            isEmail: component.isEmail ? no
             validation: component.validation ? '/.*/'
             validationOptions: component.validationOptions ? []
             options: component.options ? []
@@ -68,11 +70,13 @@ angular.module 'builder.provider', []
             component: formObject.component
             editable: formObject.editable ? component.editable
             index: formObject.index ? 0
+            key: formObject.key ? component.key
             label: formObject.label ? component.label
             description: formObject.description ? component.description
             placeholder: formObject.placeholder ? component.placeholder
             options: formObject.options ? component.options
             required: formObject.required ? component.required
+            isEmail: formObject.isEmail ? component.isEmail
             validation: formObject.validation ? component.validation
         result
 
@@ -112,11 +116,13 @@ angular.module 'builder.provider', []
         @param name: The component name.
         @param component: The component object.
             group: {string} The component group.
+            key: {string} The key of the input.
             label: {string} The label of the input.
             description: {string} The description of the input.
             placeholder: {string} The placeholder of the input.
             editable: {bool} Is the form object editable?
             required: {bool} Is the form object required?
+            isEmail: {bool} Is the form object an email field?
             validation: {string} angular-validator. "/regex/" or "[rule1, rule2]". (default is RegExp(.*))
             validationOptions: {array} [{rule: angular-validator, label: 'option label'}] the options for the validation. (default is [])
             options: {array} The input options.
@@ -153,11 +159,13 @@ angular.module 'builder.provider', []
             id: The form object id.
             component: {string} The component name
             editable: {bool} Is the form object editable? (default is yes)
+            key: {string} The form object key.
             label: {string} The form object label.
             description: {string} The form object description.
             placeholder: {string} The form object placeholder.
             options: {array} The form object options.
             required: {bool} Is the form object required? (default is no)
+            isEmail: {bool} Is the form object an email? (default is no)
             validation: {string} angular-validator. "/regex/" or "[rule1, rule2]".
             [index]: {int} The form object index. It will be updated by $builder.
         @return: The form object.

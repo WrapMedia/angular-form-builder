@@ -31,11 +31,13 @@
         var component;
         copyObjectToScope(formObject, $scope);
         $scope.optionsText = formObject.options.join('\n');
-        $scope.$watch('[label, description, placeholder, required, options, validation]', function() {
+        $scope.$watch('[label, description, placeholder, required, options, validation, isEmail, key]', function() {
+          formObject.key = $scope.key;
           formObject.label = $scope.label;
           formObject.description = $scope.description;
           formObject.placeholder = $scope.placeholder;
           formObject.required = $scope.required;
+          formObject.isEmail = $scope.isEmail;
           formObject.options = $scope.options;
           return formObject.validation = $scope.validation;
         }, true);
@@ -66,10 +68,12 @@
           Backup input value.
            */
           return this.model = {
+            key: $scope.key,
             label: $scope.label,
             description: $scope.description,
             placeholder: $scope.placeholder,
             required: $scope.required,
+            isEmail: $scope.isEmail,
             optionsText: $scope.optionsText,
             validation: $scope.validation
           };
@@ -82,10 +86,12 @@
           if (!this.model) {
             return;
           }
+          $scope.key = this.model.key;
           $scope.label = this.model.label;
           $scope.description = this.model.description;
           $scope.placeholder = this.model.placeholder;
           $scope.required = this.model.required;
+          $scope.isEmail = this.model.isEmail;
           $scope.optionsText = this.model.optionsText;
           return $scope.validation = this.model.validation;
         }
@@ -993,19 +999,21 @@
       "default": []
     };
     this.convertComponent = function(name, component) {
-      var result, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var result, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       result = {
         name: name,
         group: (_ref = component.group) != null ? _ref : 'Default',
-        label: (_ref1 = component.label) != null ? _ref1 : '',
-        description: (_ref2 = component.description) != null ? _ref2 : '',
-        placeholder: (_ref3 = component.placeholder) != null ? _ref3 : '',
-        editable: (_ref4 = component.editable) != null ? _ref4 : true,
-        required: (_ref5 = component.required) != null ? _ref5 : false,
-        validation: (_ref6 = component.validation) != null ? _ref6 : '/.*/',
-        validationOptions: (_ref7 = component.validationOptions) != null ? _ref7 : [],
-        options: (_ref8 = component.options) != null ? _ref8 : [],
-        arrayToText: (_ref9 = component.arrayToText) != null ? _ref9 : false,
+        key: (_ref1 = component.key) != null ? _ref1 : '',
+        label: (_ref2 = component.label) != null ? _ref2 : '',
+        description: (_ref3 = component.description) != null ? _ref3 : '',
+        placeholder: (_ref4 = component.placeholder) != null ? _ref4 : '',
+        editable: (_ref5 = component.editable) != null ? _ref5 : true,
+        required: (_ref6 = component.required) != null ? _ref6 : false,
+        isEmail: (_ref7 = component.isEmail) != null ? _ref7 : false,
+        validation: (_ref8 = component.validation) != null ? _ref8 : '/.*/',
+        validationOptions: (_ref9 = component.validationOptions) != null ? _ref9 : [],
+        options: (_ref10 = component.options) != null ? _ref10 : [],
+        arrayToText: (_ref11 = component.arrayToText) != null ? _ref11 : false,
         template: component.template,
         templateUrl: component.templateUrl,
         popoverTemplate: component.popoverTemplate,
@@ -1020,7 +1028,7 @@
       return result;
     };
     this.convertFormObject = function(name, formObject) {
-      var component, result, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
+      var component, result, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       if (formObject == null) {
         formObject = {};
       }
@@ -1033,12 +1041,14 @@
         component: formObject.component,
         editable: (_ref = formObject.editable) != null ? _ref : component.editable,
         index: (_ref1 = formObject.index) != null ? _ref1 : 0,
-        label: (_ref2 = formObject.label) != null ? _ref2 : component.label,
-        description: (_ref3 = formObject.description) != null ? _ref3 : component.description,
-        placeholder: (_ref4 = formObject.placeholder) != null ? _ref4 : component.placeholder,
-        options: (_ref5 = formObject.options) != null ? _ref5 : component.options,
-        required: (_ref6 = formObject.required) != null ? _ref6 : component.required,
-        validation: (_ref7 = formObject.validation) != null ? _ref7 : component.validation
+        key: (_ref2 = formObject.key) != null ? _ref2 : component.key,
+        label: (_ref3 = formObject.label) != null ? _ref3 : component.label,
+        description: (_ref4 = formObject.description) != null ? _ref4 : component.description,
+        placeholder: (_ref5 = formObject.placeholder) != null ? _ref5 : component.placeholder,
+        options: (_ref6 = formObject.options) != null ? _ref6 : component.options,
+        required: (_ref7 = formObject.required) != null ? _ref7 : component.required,
+        isEmail: (_ref8 = formObject.isEmail) != null ? _ref8 : component.isEmail,
+        validation: (_ref9 = formObject.validation) != null ? _ref9 : component.validation
       };
       return result;
     };
@@ -1091,11 +1101,13 @@
         @param name: The component name.
         @param component: The component object.
             group: {string} The component group.
+            key: {string} The key of the input.
             label: {string} The label of the input.
             description: {string} The description of the input.
             placeholder: {string} The placeholder of the input.
             editable: {bool} Is the form object editable?
             required: {bool} Is the form object required?
+            isEmail: {bool} Is the form object an email field?
             validation: {string} angular-validator. "/regex/" or "[rule1, rule2]". (default is RegExp(.*))
             validationOptions: {array} [{rule: angular-validator, label: 'option label'}] the options for the validation. (default is [])
             options: {array} The input options.
@@ -1150,11 +1162,13 @@
             id: The form object id.
             component: {string} The component name
             editable: {bool} Is the form object editable? (default is yes)
+            key: {string} The form object key.
             label: {string} The form object label.
             description: {string} The form object description.
             placeholder: {string} The form object placeholder.
             options: {array} The form object options.
             required: {bool} Is the form object required? (default is no)
+            isEmail: {bool} Is the form object an email? (default is no)
             validation: {string} angular-validator. "/regex/" or "[rule1, rule2]".
             [index]: {int} The form object index. It will be updated by $builder.
         @return: The form object.

@@ -34,11 +34,13 @@ angular.module 'builder.controller', ['builder.provider']
 
         $scope.optionsText = formObject.options.join '\n'
 
-        $scope.$watch '[label, description, placeholder, required, options, validation]', ->
+        $scope.$watch '[label, description, placeholder, required, options, validation, isEmail, key]', ->
+            formObject.key = $scope.key
             formObject.label = $scope.label
             formObject.description = $scope.description
             formObject.placeholder = $scope.placeholder
             formObject.required = $scope.required
+            formObject.isEmail = $scope.isEmail
             formObject.options = $scope.options
             formObject.validation = $scope.validation
         , yes
@@ -57,10 +59,12 @@ angular.module 'builder.controller', ['builder.provider']
             Backup input value.
             ###
             @model =
+                key: $scope.key
                 label: $scope.label
                 description: $scope.description
                 placeholder: $scope.placeholder
                 required: $scope.required
+                isEmail: $scope.isEmail
                 optionsText: $scope.optionsText
                 validation: $scope.validation
         rollback: ->
@@ -68,10 +72,12 @@ angular.module 'builder.controller', ['builder.provider']
             Rollback input value.
             ###
             return if not @model
+            $scope.key = @model.key
             $scope.label = @model.label
             $scope.description = @model.description
             $scope.placeholder = @model.placeholder
             $scope.required = @model.required
+            $scope.isEmail = @model.isEmail
             $scope.optionsText = @model.optionsText
             $scope.validation = @model.validation
 ]
